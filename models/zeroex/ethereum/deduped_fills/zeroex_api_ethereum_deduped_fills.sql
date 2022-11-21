@@ -6,7 +6,12 @@ AS
            , *
       FROM zeroex_ethereum.fills
     WHERE 1=1
-    AND tx_hash IN ( '0xfebc6867d857bf727e1d9f5e7ef58bf2c562c64015e1901c2524652fedea513a','0x27f1de5f9eef84e3ea5a92d8802162e7ef6c5a0298fee2251385cbd805a0e04c')
+    -- AND tx_hash IN ( 
+    --                  '0xfebc6867d857bf727e1d9f5e7ef58bf2c562c64015e1901c2524652fedea513a'
+    --                 ,'0x27f1de5f9eef84e3ea5a92d8802162e7ef6c5a0298fee2251385cbd805a0e04c'
+    --                 ,'0x01c555264a5b79956b28e00c9392ff4b397e43f7abad76d33c2630317c933a01'
+    --                 )
+    AND block_date = '2022-08-09'
     AND swap_flag = 1
 )
 , fills_first_last
@@ -56,11 +61,22 @@ SELECT  'ethereum' AS blockchain
       , b.taker_token_amount_raw AS token_bought_amount_raw
       , b.maker_token_amount_raw AS token_sold_amount_raw    
       , a.volume_usd AS amount_usd
-      , a.*
+      , b.taker_token AS token_bought_address
+      , b.maker_token AS token_sold_address
+      , a.taker
+      , a.maker
+      , a.affiliate_address AS project_contract_address
+      , a.tx_hash
+      , e.tx_from
+      , e.tx_to
+      , '' AS trace_address
+      , b.evt_index
+      , '' AS unique_trade_id
   FROM fills_with_tx_fill_number a 
     JOIN deduped_bridge_fills b ON (a.tx_hash = b.tx_hash AND a.evt_index = b.evt_index)
     LEFT JOIN tokens.erc20 c ON (c.contract_address = b.taker_token AND c.blockchain = 'ethereum')
     LEFT JOIN tokens.erc20 d ON (d.contract_address = b.maker_token AND c.blockchain = 'ethereum')
+    LEFT JOIN ( SELECT from AS tx_from, to AS tx_to, hash AS tx_hash  FROM ethereum.transactions ) e ON (a.tx_hash = e.tx_hash)
 ORDER BY  a.tx_hash,a.evt_index
 ;
 --token bought is a
