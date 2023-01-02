@@ -9,15 +9,15 @@
         post_hook='{{ expose_spells(\'["ethereum"]\',
                                 "project",
                                 "zeroex",
-                                \'["sui414", "bakabhai993"]\') }}'
+                                \'["bakabhai993"]\') }}'
     )
 }}
 
 {% set zeroex_v3_start_date = '2019-12-01' %}
---the code to add the data into the dex.trades table.
+--the code used to create the data for the insertion into the dex.trades table
 --this code is also the deduped version for the fills tables.
 --only the data for 0x API fills.
---dependent on:zeroex_ethereum.fills
+--dependent on:zeroex_ethereum_erc20.fills
 
 WITH fills_with_tx_fill_number
 AS
