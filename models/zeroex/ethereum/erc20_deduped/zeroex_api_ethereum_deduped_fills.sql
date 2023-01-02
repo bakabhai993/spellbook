@@ -17,7 +17,7 @@
 --the code used to create the data for the insertion into the dex.trades table
 --this code is also the deduped version for the fills tables.
 --only the data for 0x API fills.
---dependent on:zeroex_ethereum_erc20.fills
+--dependent on:zeroex_ethereum_erc20.fills.....
 
 WITH fills_with_tx_fill_number
 AS
